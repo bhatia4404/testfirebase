@@ -3,5 +3,5 @@ import { atom } from "recoil";
 
 export const currentViewURL = atom({
   key: "pdfurl",
-  default: "cs.pdf",
+  default: "",
 });
