@@ -2,8 +2,12 @@
 import React, { useState } from "react";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "./config";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { currentViewURL } from "./atoms/currentView";
+import Link from "next/link";
 
 export default function Home() {
+  const [URL, setURL] = useRecoilState(currentViewURL);
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [downloadURL, setDownloadURL] = useState("");
@@ -27,9 +31,10 @@ export default function Home() {
         console.log(error);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setDownloadURL(downloadURL)
-        );
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setDownloadURL(downloadURL);
+          setURL(downloadURL);
+        });
       }
     );
   };
@@ -45,7 +50,7 @@ export default function Home() {
   };
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold mb-4">Uploaf file to firebase</h1>
+      <h1 className="text-3xl font-bold mb-4">Upload file to firebase</h1>
       <input type="file" onChange={handleFileChange} />
       <button
         className="bg-blue-500 text-white px-4 pt-2 mt-2 rounded"
@@ -57,20 +62,12 @@ export default function Home() {
       {downloadURL && (
         <div className="mt-4">
           <p>File Uploaded Successfully</p>
-          <a
-            href={downloadURL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline text-black"
-          >
-            Donwload URL
-          </a>
-          <button
-            onClick={handleDownload}
+          <Link
+            href={"/view"}
             className="bg-green-500 text-white px-4 py-2 ml-2 rounded"
           >
-            Download
-          </button>
+            View
+          </Link>
         </div>
       )}
     </div>
