@@ -3,7 +3,7 @@
 import { RecoilRoot, useRecoilValue } from "recoil";
 import { currentViewURL } from "../atoms/currentView";
 
-export default function () {
+export default function View() {
   const url = useRecoilValue(currentViewURL);
   return (
     <RecoilRoot>
